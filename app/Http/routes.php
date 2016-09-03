@@ -28,4 +28,5 @@ $api->version('v1', function ($api) {
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
   $api->get('users', 'App\Http\Controllers\UserController@getAllUsers');
   $api->get('user', 'App\Http\Controllers\UserController@getUser');
+  $api->get('refresh-token', 'App\Http\Controllers\UserController@refreshToken');
 });
