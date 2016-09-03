@@ -17,16 +17,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/**
+ * API version 1.0 routes
+ */
 $api->version('v1', function ($api) {
   $api->post('hello', function(){
     return ["msg" => "Hello"];
   });
 
+  /**
+   * Routes where user don't need to be authenticated.
+   */
   $api->post('authenticate', 'App\Http\Controllers\Auth\AuthController@authenticate');
-});
 
-$api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-  $api->get('users', 'App\Http\Controllers\UserController@getAllUsers');
-  $api->get('user', 'App\Http\Controllers\UserController@getUser');
-  $api->get('refresh-token', 'App\Http\Controllers\UserController@refreshToken');
+  /**
+   * Routes those need user to be authenticated
+   */
+  $api->group(['middleware' => 'api.auth'], function($api){
+    $api->get('users', 'App\Http\Controllers\UserController@getAllUsers');
+    $api->get('user', 'App\Http\Controllers\UserController@getUser');
+    $api->get('refresh-token', 'App\Http\Controllers\UserController@refreshToken');
+  });
 });
