@@ -11,11 +11,11 @@ use JWTAuth;
 
 class UserController extends Controller
 {
-    public function getAllUsers(){
+    public function index(){
       return User::all();
     }
 
-    public function getUser(){
+    public function show(){
       try {
         $user = JWTAuth::parseToken()->toUser();
         if(!$user){
@@ -26,20 +26,5 @@ class UserController extends Controller
       }
 
       return $this->response->array($user->toArray());
-    }
-
-    public function refreshToken(){
-      $token = JWTAuth::getToken();
-      if(!$token){
-        return $this->response->errorUnauthorized("Token is not valid!!");
-      }
-
-      try {
-        $refreshedToken = JWTAuth::refresh($token);
-      } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-        return $this->response->error('Token is not valid!!');
-      }
-
-      return $this->response->array(['token' => $refreshedToken]);
     }
 }

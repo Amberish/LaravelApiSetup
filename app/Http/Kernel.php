@@ -49,14 +49,19 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        
+
         //JWT middlewares
         'jwt.auth' => 'Tymon\JWTAuth\Middleware\GetUserFromToken',
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
 
         //Entrust role, permission and ability middleware
-        'role' => \Zizaco\Entrust\Middleware\EntrustRole::class,
-        'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
-        'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
+        //'role' => \Zizaco\Entrust\Middleware\EntrustRole::class,
+        //'permission' => \Zizaco\Entrust\Middleware\EntrustPermission::class,
+        // 'ability' => \Zizaco\Entrust\Middleware\EntrustAbility::class,
+
+        // Alternate implementation for Entrust middleware are used for JWT Tokens
+        'role' => \App\Http\Middleware\TokenEntrustRole::class,
+        'permission' => \App\Http\Middleware\TokenEntrustPermission::class,
+        'ability' => \App\Http\Middleware\TokenEntrustAbility::class,
     ];
 }
