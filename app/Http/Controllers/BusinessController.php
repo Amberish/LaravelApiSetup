@@ -9,7 +9,7 @@ use App\Http\Requests;
 class BusinessController extends Controller
 {
     function index(){
-      echo "Hello";
+      
     }
 
     function show($id){

@@ -65,7 +65,7 @@ $api->version('v1', function ($api) {
      *
      * Main Category(called Business) APIs
      */
-    $api->group(['middleware' => ['permission:handle-users']], function($api){
+    $api->group(['middleware' => ['permission:handle-business']], function($api){
       $api->get('businesses', 'App\Http\Controllers\BusinessController@index');
       $api->get('business/{business_id}', 'App\Http\Controllers\BusinessController@show');
       $api->post('business', 'App\Http\Controllers\BusinessController@create');

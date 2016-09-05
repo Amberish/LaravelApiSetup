@@ -9,6 +9,8 @@ use Tymon\JWTAuth\Middleware\BaseMiddleware;
 
 class TokenEntrustAbility extends BaseMiddleware
 {
+      const ACCESS_NOT_ALLOWED = "Access Not Allowed!!";
+      
       public function handle($request, Closure $next, $roles, $permissions, $validateAll = false){
           if (! $token = $this->auth->setRequest($request)->getToken()) {
               return $this->respond('tymon.jwt.absent', 'token_not_provided', 400);
@@ -25,9 +27,9 @@ class TokenEntrustAbility extends BaseMiddleware
           if (! $user) {
               return $this->respond('tymon.jwt.user_not_found', 'user_not_found', 404);
           }
-          
+
           if (!$request->user()->ability(explode('|', $roles), explode('|', $permissions), array('validate_all' => $validateAll))) {
-              return $this->respond('tymon.jwt.invalid', 'token_invalid', 401, 'Unauthorized');
+                return response(['error' => self::ACCESS_NOT_ALLOWED], 401);
           }
 
           $this->events->fire('tymon.jwt.valid', $user);
