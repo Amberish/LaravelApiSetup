@@ -40,50 +40,74 @@ $api->version('v1', function ($api) {
   /**
    * Routes where user don't need to be authenticated.
    */
-  $api->post('authenticate', 'App\Http\Controllers\Auth\AuthController@authenticate');
+  $api->post('authenticate', 'App\Api\V1\Controllers\Auth\AuthController@authenticate');
 
   /**
    * Routes those need user to be authenticated
    */
   $api->group(['middleware' => 'api.auth'], function($api){
 
+    //Use these apis one type for setting basic roles & perms to get started.
+    $api->get('basic-roles', 'App\Api\V1\Controllers\RolesAndPermissionsController@basicRoles');
+    $api->get('basic-permissions', 'App\Api\V1\Controllers\RolesAndPermissionsController@basicPermissions');
+
     /**
      *Token Related APIs
      */
-    $api->get('refresh-token', 'App\Http\Controllers\JWTTokenController@refreshToken');
-
-    $api->get('basic-roles', 'App\Http\Controllers\RolesAndPermissionsController@basicRoles');
-    $api->get('basic-permissions', 'App\Http\Controllers\RolesAndPermissionsController@basicPermissions');
+    $api->get('refresh-token', 'App\Api\V1\Controllers\JWTTokenController@refreshToken');
 
     /**
      *
      * Roles and Permissions
      */
+     $api->post('role/create', 'App\Api\V1\Controllers\RolesAndPermissionsController@createRole');
+     $api->post('permission/create', 'App\Api\V1\Controllers\RolesAndPermissionsController@createPermission');
+     $api->patch('attach/permission/{permission_id}/role/{role_id}', 'App\Api\V1\Controllers\RolesAndPermissionsController@attachPermissionToRole');
+     $api->patch('attach/role/{role_id}/user/{user_id}', 'App\Api\V1\Controllers\RolesAndPermissionsController@attachRoleToUser');
 
+     /**
+      *
+      * User APIs
+      */
+     $api->group(['middleware' => ['ability:admin|owner,manage-users']], function($api){
+
+       $api->get('users', 'App\Api\V1\Controllers\UserController@index')
+           ->middleware('permission:view-all-businesses|manage-users');
+
+       $api->get('user/{user_id?}', 'App\Api\V1\Controllers\UserController@show')
+           ->middleware('permission:view-business|manage-users');
+
+       $api->post('user/create', 'App\Api\V1\Controllers\UserController@create')
+           ->middleware('permission:create-business|manage-users');
+
+       $api->post('user/{user_id}', 'App\Api\V1\Controllers\UserController@update')
+           ->middleware('permission:edit-business|manage-users');
+
+       $api->delete('user/{user_id}', 'App\Api\V1\Controllers\UserController@destroy')
+           ->middleware('permission:delete-business|manage-users');
+     });
 
     /**
      *
      * Main Category(called Business) APIs
      */
     $api->group(['middleware' => ['ability:admin|owner,manage-businesses']], function($api){
-      $api->get('businesses', 'App\Http\Controllers\BusinessController@index');
-      $api->get('business/{business_id}', 'App\Http\Controllers\BusinessController@show');
-      $api->post('business/create', 'App\Http\Controllers\BusinessController@create');
-      $api->post('business/{business_id}', 'App\Http\Controllers\BusinessController@update');
-      $api->delete('business/{business_id}', 'App\Http\Controllers\BusinessController@destroy');
+
+      $api->get('businesses', 'App\Api\V1\Controllers\BusinessController@index')
+          ->middleware('permission:view-all-businesses|manage-businesses');
+
+      $api->get('business/{business_id}', 'App\Api\V1\Controllers\BusinessController@show')
+          ->middleware('permission:view-business|manage-businesses');
+
+      $api->post('business/create', 'App\Api\V1\Controllers\BusinessController@create')
+          ->middleware('permission:create-business|manage-businesses');
+
+      $api->post('business/{business_id}', 'App\Api\V1\Controllers\BusinessController@update')
+          ->middleware('permission:edit-business|manage-businesses');
+
+      $api->delete('business/{business_id}', 'App\Api\V1\Controllers\BusinessController@destroy')
+          ->middleware('permission:delete-business|manage-businesses');
     });
 
-    /**
-     *
-     * User Related APIs
-     */
-    $api->get('users', 'App\Http\Controllers\UserController@index');
-    $api->get('user', 'App\Http\Controllers\UserController@show');
-
-
-    $api->get('roles', function(){
-      $roles = App\Models\Role::all();
-      return $roles;
-    });
   });
 });
