@@ -66,5 +66,53 @@ class UserController extends Controller
      */
     function create(Request $request){
       $input = $request->input();
+
+      $user = new User;
+      $user->fill($input);
+
+      $user['password'] = bcrypt($input['password']);
+      $user->save();
+
+      return $this->response->array([
+        "status" => true,
+        "message" => "User Created!!",
+        "data" => $user->toArray()
+      ]);
+    }
+
+    /**
+     * Method to update a user.
+     * @param  Request $request
+     * @param  integer  $user_id
+     * @return json
+     */
+    function update(Request $request, $user_id) {
+      $input = $request->input();
+
+      $user = User::find($user_id);
+      $user->fill($input);
+      $user->save();
+
+      return $this->response->array([
+        "status" => true,
+        "message" => "User Updated!!",
+        "data" => $user->toArray()
+      ]);
+    }
+
+    /**
+     * Method to delete a user
+     * @param  integer $user_id
+     * @return json
+     */
+    function destroy($user_id){
+      $user = User::find($user_id);
+      $user->delete();
+
+      return $this->response->array([
+        "status" => true,
+        "message" => "User Deleted!!",
+        "data" => $user->toArray()
+      ]);
     }
 }

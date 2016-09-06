@@ -47,10 +47,6 @@ $api->version('v1', function ($api) {
    */
   $api->group(['middleware' => 'api.auth'], function($api){
 
-    //Use these apis one type for setting basic roles & perms to get started.
-    $api->get('basic-roles', 'App\Api\V1\Controllers\RolesAndPermissionsController@basicRoles');
-    $api->get('basic-permissions', 'App\Api\V1\Controllers\RolesAndPermissionsController@basicPermissions');
-
     /**
      *Token Related APIs
      */
@@ -72,19 +68,19 @@ $api->version('v1', function ($api) {
      $api->group(['middleware' => ['ability:admin|owner,manage-users']], function($api){
 
        $api->get('users', 'App\Api\V1\Controllers\UserController@index')
-           ->middleware('permission:view-all-businesses|manage-users');
+           ->middleware('permission:view-all-users|manage-users');
 
        $api->get('user/{user_id?}', 'App\Api\V1\Controllers\UserController@show')
-           ->middleware('permission:view-business|manage-users');
+           ->middleware('permission:view-user|manage-users');
 
        $api->post('user/create', 'App\Api\V1\Controllers\UserController@create')
-           ->middleware('permission:create-business|manage-users');
+           ->middleware('permission:create-user|manage-users');
 
        $api->post('user/{user_id}', 'App\Api\V1\Controllers\UserController@update')
-           ->middleware('permission:edit-business|manage-users');
+           ->middleware('permission:edit-user|manage-users');
 
        $api->delete('user/{user_id}', 'App\Api\V1\Controllers\UserController@destroy')
-           ->middleware('permission:delete-business|manage-users');
+           ->middleware('permission:delete-user|manage-users');
      });
 
     /**
