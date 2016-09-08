@@ -115,4 +115,46 @@ class UserController extends Controller
         "data" => $user->toArray()
       ]);
     }
+
+    /**
+     * Method to import batch users to DB
+     * @param UserListImport  $import  [This class resolves the uploaded file and provide data]
+     * @return json
+     */
+    function batchImport(\Helpers\UserListImport $import) {
+      $user_list = $import->get(['first_name', 'last_name', 'email', 'phone']);
+      $users_existed = [];
+      $users_created = [];
+      //$import->dd();
+      foreach ($user_list as $item) {
+        try{
+          //create user
+          $user = new User;
+          //dd($item->toArray());
+          $user->fill($item->toArray());
+          $user->phone = ($item->phone)?:'';
+          $user->save();
+          $users_created[] = $item;
+        } catch(\PDOException $e) {
+          $status_code = $e->getCode();
+          switch ($status_code) {
+            case 23000:
+              if(isset($item->first_name) && isset($item->last_name) && isset($item->email) && isset($item->phone)){
+                $users_existed[] = $item;
+              }else
+                return $this->response->error("Input file format not valid!!", 400);
+              break;
+            default:
+              return $this->response->error("Something went wrong!!", 400);
+          }
+        }
+      }
+
+      return $this->response->array([
+        "status" => true,
+        "message" => count($users_created) . " user(s) imported!! " . count($users_existed) . " already existed!!",
+        "user_created" => $users_created,
+        "user_existed" => $users_existed
+      ]);
+    }
 }

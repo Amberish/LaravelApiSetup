@@ -165,6 +165,10 @@ return [
         //Entrust service provider
         Zizaco\Entrust\EntrustServiceProvider::class,
 
+        Collective\Bus\BusServiceProvider::class,
+
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -215,6 +219,7 @@ return [
         'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
 
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];

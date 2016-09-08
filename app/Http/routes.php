@@ -17,14 +17,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
-
 /**
  * API version 1.0 routes
  */
 $api->version('v1', function ($api) {
+
   $api->post('hello', function(){
     return ["msg" => "Hello"];
+  });
+
+  $api->get('testing_helper', function(){
+    $helper = new Helpers\TestHelper;
   });
 
   //Cache driver need to be set to array, if it is file if this link doen't work
@@ -71,16 +74,23 @@ $api->version('v1', function ($api) {
            ->middleware('permission:view-all-users|manage-users');
 
        $api->get('user/{user_id?}', 'App\Api\V1\Controllers\UserController@show')
+           ->where('user_id', '[0-9]+')
            ->middleware('permission:view-user|manage-users');
 
        $api->post('user/create', 'App\Api\V1\Controllers\UserController@create')
            ->middleware('permission:create-user|manage-users');
 
        $api->post('user/{user_id}', 'App\Api\V1\Controllers\UserController@update')
+           ->where('user_id', '[0-9]+')
            ->middleware('permission:edit-user|manage-users');
 
        $api->delete('user/{user_id}', 'App\Api\V1\Controllers\UserController@destroy')
+           ->where('user_id', '[0-9]+')
            ->middleware('permission:delete-user|manage-users');
+
+       $api->post('user/batch', 'App\Api\V1\Controllers\UserController@batchImport')
+           ->middleware('permission:batch-users|manage-users');
+
      });
 
     /**
@@ -104,6 +114,8 @@ $api->version('v1', function ($api) {
       $api->delete('business/{business_id}', 'App\Api\V1\Controllers\BusinessController@destroy')
           ->middleware('permission:delete-business|manage-businesses');
     });
+
+
 
   });
 });
