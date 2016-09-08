@@ -89,7 +89,7 @@ $api->version('v1', function ($api) {
            ->middleware('permission:delete-user|manage-users');
 
        $api->post('user/batch', 'App\Api\V1\Controllers\UserController@batchImport')
-           ->middleware('permission:batch-users|manage-users');
+           ->middleware('permission:add-batch-users|manage-users');
 
      });
 
