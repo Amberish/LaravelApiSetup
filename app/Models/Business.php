@@ -8,11 +8,11 @@ class Business extends Model
 {
     protected $fillable = ['name'];
 
-    function userGroups(){
-      $this->hasMany(\App\Models\UserGroup);
+    function userGroup(){
+      return $this->hasMany('App\Models\UserGroup');
     }
 
     function topics(){
-      $this->hasMany(\App\Models\Topic);
+      return $this->hasMany('App\Models\Topic');
     }
 }

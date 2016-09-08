@@ -116,6 +116,30 @@ $api->version('v1', function ($api) {
     });
 
 
+     /**
+      *
+      * User Groups APIs
+      */
+     $api->group(['middleware' => ['ability:admin|owner,manage-user-groups']], function($api){
+
+       $api->get('user-groups', 'App\Api\V1\Controllers\UserGroupsController@index')
+           ->middleware('permission:view-all-user-groups|manage-user-groups');
+
+       $api->get('user-group/{group_id}', 'App\Api\V1\Controllers\UserGroupsController@show')
+           ->where('group_id', '[0-9]+')
+           ->middleware('permission:view-user-group|manage-user-groups');
+
+       $api->post('user-group/create', 'App\Api\V1\Controllers\UserGroupsController@create')
+           ->middleware('permission:create-user-group|manage-user-groups');
+
+       $api->post('user-group/{group_id}', 'App\Api\V1\Controllers\UserGroupsController@update')
+           ->where('group_id', '[0-9]+')
+           ->middleware('permission:edit-user-group|manage-user-groups');
+
+       $api->delete('user-group/{group_id}', 'App\Api\V1\Controllers\UserGroupsController@destroy')
+           ->where('group_id', '[0-9]+')
+           ->middleware('permission:delete-user-group|manage-user-groups');
+     });
 
   });
 });

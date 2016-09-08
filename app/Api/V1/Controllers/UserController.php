@@ -132,6 +132,7 @@ class UserController extends Controller
           $user = new User;
           //dd($item->toArray());
           $user->fill($item->toArray());
+          $user->name = $item->first_name . ' ' . $item->last_name;
           $user->phone = ($item->phone)?:'';
           $user->save();
           $users_created[] = $item;

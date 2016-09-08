@@ -14,9 +14,11 @@ class BusinessController extends Controller
      * @return json
      */
     function index(){
+      $businesses = Business::all();
       return $this->response->array([
         "status" => "true",
-        "data" => Business::all()
+        "message" => "All Businesses!",
+        "data" => $businesses
       ], 200);
     }
 
@@ -25,11 +27,16 @@ class BusinessController extends Controller
      * @param  integer $id
      * @return json
      */
-    function show($id){
-      return $this->response->array([
-        "status" => "true",
-        "data" => Business::find($id)
-      ], 200);
+    function show($business_id){
+      $business = Business::find($business_id);
+      if($business)
+        return $this->response->array([
+          "status" => "true",
+          "message" => "Businesses Found!",
+          "data" => $business
+        ], 200);
+
+      return $this->response->errorNotFound("Business Not Found!");
     }
 
     /**
@@ -56,8 +63,8 @@ class BusinessController extends Controller
      * @param  integer  $id
      * @return json
      */
-    function update(Request $request, $id){
-      $business = Business::find($id);
+    function update(Request $request, $business_id){
+      $business = Business::find($business_id);
 
       $input = $request->input();
       $business->fill($input);
@@ -74,8 +81,8 @@ class BusinessController extends Controller
      * @param  integer $id
      * @return json
      */
-    function destroy($id){
-      $business = Business::find($id);
+    function destroy($business_id){
+      $business = Business::find($business_id);
 
       $business->delete();
 
