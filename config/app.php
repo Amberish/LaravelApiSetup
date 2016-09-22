@@ -169,6 +169,9 @@ return [
 
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
+        //CORS package for accessing api from different source
+        Barryvdh\Cors\ServiceProvider::class,
+
     ],
 
     /*

@@ -14,7 +14,7 @@
 $api = app('Dingo\Api\Routing\Router');
 
 Route::get('/', function () {
-    return view('welcome');
+    // return $users = App\User::find(2)->group;
 });
 
 /**

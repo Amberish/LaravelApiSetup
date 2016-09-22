@@ -12,4 +12,8 @@ class UserGroup extends Model
     function business(){
       return $this->belongsTo('App\Models\Business');
     }
+
+    function users(){
+      return $this->hasMany('App\User', 'id', 'group_id');
+    }
 }
